@@ -11,6 +11,12 @@
 |
 */
 
+// TOPPage
 Route::get('/', function () {
     return view('welcome');
 });
+
+// User登録　2種の通信
+Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
+
+
