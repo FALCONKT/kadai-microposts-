@@ -14,10 +14,30 @@
         </aside>
         <div class="col-sm-8">
             <ul class="nav nav-tabs nav-justified mb-3">
-                <li class="nav-item"><a href="#" class="nav-link">TimeLine</a></li>
+                <!--User詳細へのLink　追加-->
+                <li class="nav-item">
+                    <!--User詳細へのLink　追加　投稿数が出てきている　見た目では　TimeLine-->
+                    <a href="{{ route('users.show', ['id' => $user->id]) }}" class="nav-link {{ Request::is('users/' . $user->id) ? 'active' : '' }}">TimeLine <span class="badge badge-secondary">{{ $count_microposts }}</span></a>
+                </li>
                 <li class="nav-item"><a href="#" class="nav-link">Followings</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Followers</a></li>
             </ul>
+            
+            <!--micropost部入れ込み        -->
+            @if (Auth::id() == $user->id)
+                {!! Form::open(['route' => 'microposts.store']) !!}
+                    <div class="form-group">
+                        {!! Form::textarea('content', old('content'), ['class' => 'form-control', 'rows' => '2']) !!}
+                        {!! Form::submit('Post', ['class' => 'btn btn-primary btn-block']) !!}
+                    </div>
+                {!! Form::close() !!}
+            @endif
+            
+            @if (count($microposts) > 0)
+                @include('microposts.microposts', ['microposts' => $microposts])
+            @endif
+                    
+                    
         </div>
     </div>
 @endsection

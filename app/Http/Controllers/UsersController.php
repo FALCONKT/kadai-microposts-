@@ -27,9 +27,20 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+        
+        // microposts 追加時 を追加
+        $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
 
-        return view('users.show', [
+        // 変数として$data を追加
+        $data = [
             'user' => $user,
-        ]);
+            'microposts' => $microposts,
+        ];
+        
+        $data += $this->counts($user);
+
+
+        // 元の内容を改変
+        return view('users.show', $data);
     }
 }

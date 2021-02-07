@@ -12,9 +12,12 @@
 */
 
 // TOPPage
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+//変更 Controller ( MicropostsController@index  を経由して　welcom　へ
+Route::get('/', 'MicropostsController@index');
 
 // User登録　2種の通信
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
@@ -23,6 +26,9 @@ Route::post('signup', 'Auth\RegisterController@register')->name('signup.post');
 // User機能
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
+    
+    Route::resource('microposts', 'MicropostsController', ['only' => ['store', 'destroy']]);
+
 });
 
 // LogIn認証
