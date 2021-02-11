@@ -37,10 +37,46 @@ class UsersController extends Controller
             'microposts' => $microposts,
         ];
         
+        // $data にCountが増えると現在のid に$dataの内容を足す　
         $data += $this->counts($user);
-
+        
 
         // 元の内容を改変
         return view('users.show', $data);
     }
+    
+    // Followしている
+    public function followings($id)
+    {
+        $user = User::find($id);
+        $followings = $user->followings()->paginate(10);
+
+        $data = [
+            'user' => $user,
+            'users' => $followings,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.followings', $data);
+    }
+
+    // Followされている
+    public function followers($id)
+    {
+        $user = User::find($id);
+        $followers = $user->followers()->paginate(10);
+
+        $data = [
+            'user' => $user,
+            'users' => $followers,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.followers', $data);
+    }
+    
+    
+    
 }
