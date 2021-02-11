@@ -84,17 +84,17 @@ class User extends Authenticatable
     
     public function unfollow($userId)
     {
-        // 既にフォローしているかの確認
+        // 既にFollowしているかの確認
         $exist = $this->is_following($userId);
         // 相手が自分自身かどうかの確認
         $its_me = $this->id == $userId;
     
         if ($exist && !$its_me) {
-            // 既にフォローしていればフォローを外す
+            // 既にFollowしていればFollowを外す
             $this->followings()->detach($userId);
             return true;
         } else {
-            // 未フォローであれば何もしない
+            // 未Foloowであれば何もしない
             return false;
         }
     }
@@ -104,6 +104,23 @@ class User extends Authenticatable
         return $this->followings()->where('follow_id', $userId)->exists();
     }
     
+    
+    // TimeLine用
+    public function feed_microposts()
+    {
+        // User がFollowしている User の id の配列を取得
+        // pluck() は与えられた引数のTableのColumn名だけを抜き出す命令
+        // toArray() を実行して、通常の配列に変換
+        $follow_user_ids = $this->followings()->pluck('users.id')->toArray();
+        
+        // 自分の id も追加。自分自身のMicropostも表示させるため
+        $follow_user_ids[] = $this->id;
+        
+        // microposts Tableの user_id Cilumnで $follow_user_ids の中にある
+        // Userid を含むもの全てを取得して return 
+        return Micropost::whereIn('user_id', $follow_user_ids);
+
+    }
     
 }
 
